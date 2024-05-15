@@ -2,8 +2,8 @@ job('Aplicacion Node.js Docker DSL') {
     description('Aplicación Node JS Docker DSL para el curso de Jenkins')
     scm {
         git('https://github.com/macloujulian/nodejsapp.git', 'master') { node ->
-            node / gitConfigName('macloujulian')
-            node / gitConfigEmail('macloujulian@gmail.com')
+            node / gitConfigName('gussaints')
+            node / gitConfigEmail('qwertygussaints@gmail.com')
         }
     }
     triggers {
@@ -14,7 +14,7 @@ job('Aplicacion Node.js Docker DSL') {
     }
     steps {
         dockerBuildAndPublish {
-            repositoryName('macloujulian/nodejsapp')
+            repositoryName('gussaintsofficial/nodejsapp01')
             tag('${GIT_REVISION,length=7}')
             registryCredentials('docker-hub')
             forcePull(false)
@@ -23,22 +23,21 @@ job('Aplicacion Node.js Docker DSL') {
         }
     }
     publishers {
-	slackNotifier {
-            notifyAborted(true)
-            notifyEveryFailure(true)
-            notifyNotBuilt(false)
-            notifyUnstable(false)
-            notifyBackToNormal(true)
-            notifySuccess(true)
-            notifyRepeatedFailure(false)
-            startNotification(false)
-            includeTestSummary(false)
-            includeCustomMessage(false)
-            customMessage(null)
-            sendAs(null)
-            commitInfoChoice('NONE')
-            teamDomain(null)
-            authToken(null)
+	// Add conditional post-build actions.
+        flexiblePublish {
+            // Adds a conditional action.
+            conditionalAction {
+                // Specifies the condition to evaluate before executing the build steps.
+                condition {
+                    // Runs a shell script for checking the condition.
+                    shell('echo hello0000!')
+                    // Runs the build steps if the current build status is within the configured range.
+                    status('FAILURE', 'SUCCESS')
+                }
+                steps {
+                    shell('echo hello1111!')
+                }
+            }
         }
     }
 }
